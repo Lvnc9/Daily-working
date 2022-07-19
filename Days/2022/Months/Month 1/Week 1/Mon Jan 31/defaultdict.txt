@@ -1,0 +1,20 @@
+#! python3.9.9
+# Start
+# Note from usage of defaultdict
+# Modules:
+import defaultdict
+num_time = 0
+
+def number_counter(self):
+    """ Base funciton for defaultdict to
+    create number of the tuples that get saved in it
+    """
+
+    global num_time
+    num_time += 1
+    return (num_time, [])
+
+dd = defaultdict(number_counter)
+dd['a'][1].append(("somehow", "we", "are", "not", "the", "same"))
+
+# End

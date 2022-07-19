@@ -1,0 +1,19 @@
+Distraction!:
+-1-----------In the old times matin used to call me to come and play with each other
+            he came to wake me up and make me to come and play dota :)
+
+Notes[Chapter 5: when to use objects]:
+========Don't rush to use an object just because you can use an object, but
+    never neglect to create a class when you need to use a class.
+
+Questions!:
+-1------ is C# make every attributes private or not and then for setting or getting them need
+    an function like get and set?
+
+-2------ Does amir not gets tired same as me?
+-3------ In java and simillar languages we should not make public members private
+
+
+Free notes:
+//////// Can you feel it?
+        this is where we blong :)
