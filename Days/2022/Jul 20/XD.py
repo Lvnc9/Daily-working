@@ -48,7 +48,7 @@ def decode_contact(dic):
 c = Contact("John", "Smith")
 
 ### ContactEncoder is getting
-# ###used to save object data without making nonesense code
+# used to save object data without making nonesense code ###
 lala1 = json.dumps(c, cls=ContactEncoder)
 
 laka = json.loads(lala1, object_hook=decode_contact)
