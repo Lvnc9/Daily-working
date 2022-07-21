@@ -41,34 +41,54 @@ class Renderer(metalass=ABCMeta):
         if cls is Renderer:
             attributes = ChainMap(*(Superclass.__dict__
                                     for Superclass in Subclass.__mro__))
-        methods = ('header', 'paragraph', 'footer')
-        if all(method in attributes for method in methods):
-            return True
+            
+            class TextRenderer:
+                """ Renderer """
+
+                def __init__(self, width=80, file=stdout):
+                    self.width = width
+                    self.file = file
+                    self.previous = False
+
+                def header(self, title):
+                    self.file.write("{{0}:^{2}}\n{1:^{2}}\n".format(
+                        title, "=" * len(title), self.width))
+
+                def paragraph(self, text):
+                    if self.previous:
+                       self.file.write('\n')
+                    self.file.write(textwrap.fill(text, self.width))
+                    self.file.write('\n')
+                    self.previous = True
+
+                def footer(self):
+                    pass
+                
+
+            class HtmlRenderer:
+                """ adding htmlwriter to the HTMLrenderer
+                for better API """
+
+                def __init__(self, HtmlWriter):
+                    self.htmlwriter = HtmlWriter
+
+                def header(self, title):
+                    self.htmlwriter.header()
+                    self.htmlwriter.title(title)
+                    self.htmlwriter.start_body()
+
+                def paragraph(self, text):
+                    self.htmlwriter.body(text)
+
+                def footer(self):
+                    self.htmlwriter.end_body()
+                    self.footer()
+
+
+            methods = ('header', 'paragraph', 'footer')
+            if not all(method in attributes for method in methods):
+                return AttributeError
         return NotImplemented
-
-
-class TextRenderer:
-    """ Renderer """
-
-    def __init__(self, width=80, file=stdout):
-        self.width = width
-        self.file = file
-        self.previous = False
-
-    def header(self, title):
-        self.file.write("{{0}:^{2}}\n{1:^{2}}\n".format(
-            title, "=" * len(title), self.width))
-
-    def paragraph(self, text):
-        if self.previous:
-           self.file.write('\n')
-        self.file.write(textwrap.fill(text, self.width))
-        self.file.write('\n')
-        self.previous = True
-
-    def footer(self):
-        pass
-
 
 class HtmlWriter:
 
@@ -77,41 +97,21 @@ class HtmlWriter:
 
     def header(self):
         self.file.write("<!doctype html>\n<html>\n")
-    
+
     def title(self, title):
         self.file.write(f"<head><title>{escape(title)}</title></head>\n")
-    
+
     def start_body(self):
         self.file.write("<body>\n")
 
     def body(self, text):
         self.file.write("<p>{escape(text)}</p>\n")
-    
+
     def end_body(self):
         self.file.write("</body>\n")
-    
+
     def footer(self):
         self.file.write("</html>\n")
-
-
-class HtmlRenderer:
-    """ adding htmlwriter to the HTMLrenderer
-    for better API """
-
-    def __init__(self, htmlwriter):
-        self.htmlwriter = HtmlWriter
-
-    def header(self, title):
-        self.htmlwriter.header()
-        self.htmlwriter.title(title)
-        self.htmlwriter.start_body()
-    
-    def paragraph(self, text):
-        self.htmlwriter.body(text)
-    
-    def footer(self):
-        self.htmlwriter.end_body()
-        self.footer()
 
 
 """ AT THE END ALL OFF THE HTMLRENDERER AND TEXTRENDERER
