@@ -1,11 +1,10 @@
 #!/usr/bin/python
 # Start
-# TODO : DOC
+# Decorators
 # Modules
 from email.mime import application
 import functools
 from html import escape
-
 from gpg import Data
 
 
@@ -40,8 +39,30 @@ def statically_typed(*types, return_type=None):
         return wrapper
     return decorator
 
-class Web: pass
-class bottle : pass
+class Web: 
+    pass
+
+class bottle : 
+    pass
+
+def secret():
+    pass
+
+def COOKIE():
+    pass
+
+def ensure_loged_in(function):
+    @functools.wraps(function)
+    def wrapper(*args, **kwargs):
+        username = bottle.request.get_cookie(COOKIE,
+            secret=secret(bottle.request)
+        )
+        if username is not None:
+            kwargs['username'] = username
+            return function(*args, **kwargs)
+        return bootle.redirect('/login')
+
+    return wrapper
 
 @application.post("/mailinglists/add")
 @Web.ensure_logged_in
