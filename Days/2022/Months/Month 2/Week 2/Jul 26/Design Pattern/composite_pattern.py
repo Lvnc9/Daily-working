@@ -68,6 +68,8 @@ class CompositeItem(AbstractCompositeItem):
 
     @property
     def price(self):
+        ### Its like a generator!, we can loop over 
+        # the subclass and the super classes ###
         return sum(item.price for item in self)
     
     def print(self, indent='', file=stdout):
