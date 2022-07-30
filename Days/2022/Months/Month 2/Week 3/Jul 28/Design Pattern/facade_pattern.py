@@ -5,7 +5,9 @@
 import zipfile
 import os
 import tarfile
-
+import re
+import string
+import gzip
 
 class Archive:
 
@@ -25,7 +27,7 @@ class Archive:
         self.__filename = name
 
     def close(self):
-        if self.file is not None:
+        if self._file is not None:
             self._file.close()
         self._name = self._file = self.unpack = None
 
@@ -36,7 +38,7 @@ class Archive:
 
     def unpack(self):
         if self._file is None:
-            self.prepare()
+            self._prepare()
         self._unpack()
     
     def _prepare(self):
@@ -52,9 +54,9 @@ class Archive:
         def safe_extractall():
             unsafe = []
             for name in self.names():
-                if self.is_safe(name):
+                if not self.is_safe(name):
                     unsafe.append(name)
-            if unsafe:
+            if unsafe:  
                 raise ValueError(f"UNSAFE TO UNPACK {unsafe}")
             self._file_extractall()
         if self.filename.endswith('.zip'):
@@ -67,6 +69,20 @@ class Archive:
             self._names = self._file.getnames
             self._unpack = safe_extractall
 
+    def is_safe(self, filename):
+        return not (filename.startswith(("/", "\\")) or
+            (len(filename) > 1 and filename[1] == ":" and
+            filename[0] in string.ascii_letter) or
+            re.search(r"[.][.][/\\]", filename))
+
+    def _prepare_gzip(self):
+        self._file = gzip.open(self.filename)
+        filename = self.filename[:-3]
+        self._names = lambda: [filename]
+        def extractall():
+            with open(filename, "wb") as file:
+                file.write(self._file.read())
+        self._unpack = extractall
 
     def __enter__(self):
         return self
@@ -80,6 +96,7 @@ zipFilename = 'idk'
 with Archive(zipFilename) as archive:
     print(archive.names())
     archive.unpack()
+    
 
 
 # End
