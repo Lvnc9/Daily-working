@@ -1,6 +1,10 @@
 #!/usr/bin/python
 # Start
-# Unknown yet
+### we have Kernel linux log that tells us hard is broken
+# and we find hard disk logs to find the right errors that had been eccured
+# so we write a programm that uses coroutines to find the right serinal number 
+# and bus Identifier (0:0:0:0) and a sda block device identifier (sda) of the hard disk
+# and separate write it in another log file ###
 # Modules
 import re
  
