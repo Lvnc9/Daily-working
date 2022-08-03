@@ -2,9 +2,8 @@
 # Start
 # Gets some events from the user and some of them from the system
 # and tries to fallow the Chain Responsibility behavioral pattern ###
-
-from pyrsistent import T
-from requests import NullHandler
+# Modules
+import sys
 
 
 class Event:
@@ -46,7 +45,7 @@ class Event:
         # process become successful it the Ticket = True will be set
         self.__TimeTicket = True
 
-class NullHandeler:
+class NullHandler:
     """ the base class of the chain calls """
 
     def __init__(self, successor=None):
@@ -57,7 +56,7 @@ class NullHandeler:
             self.__successor.handle(event)
 
 
-class MouseHandler(NullHandeler):
+class MouseHandler(NullHandler):
 
     def handle(self, event):
         if event.kind == EVENT.MOUSE:
@@ -65,7 +64,7 @@ class MouseHandler(NullHandeler):
         else:
             super().__handle(event)
 
-class KeyHandler(NullHandeler):
+class KeyHandler(NullHandler):
 
     def handle(self, event):
         if event.kind == EVENT.Key:
@@ -73,7 +72,7 @@ class KeyHandler(NullHandeler):
         else:
             super().__handle(event)
 
-class TimerHandler(NullHandeler):
+class TimerHandler(NullHandler):
 
     def handle(self, event):
         if event.kind == EVENT.Time:
