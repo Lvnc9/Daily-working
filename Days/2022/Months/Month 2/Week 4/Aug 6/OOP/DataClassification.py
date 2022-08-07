@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 # Start
-# Ho hooo here we come with AI STUFF!!!!
+# Ho hooo here we come with AI algorithm STUFF!!!!
 # Modules
 import csv
 from random import random
 import math
+from collections import Counter
 
 
 dataset_filename = 'colors.csv'
@@ -41,15 +42,42 @@ def nearest_neighbors(model_colors, num_neighbors):
         ]
 
 
-model_colors = load_colors(dataset_filename)
-target_colors = generate_colors(3)
-get_neighbors = nearest_neighbors(model_colors, 5)
-next(get_neighbors)
+def write_results(filename="output.csv"):
+    with open(filename, "w") as file:
+        writer = csv.writer(file)
+        while True:
+            color, name = yield
+            writer.writerow(list(color) + [name])
 
-for color in target_colors:
-    distances = get_neighbors.send(color)
-    print(color)
-    for d in distances:
-        print(color_distance(color, d[0]), d[1])
 
+def name_colors(get_neighbors):
+    color = yield
+    while True:
+        near = get_neighbors.send(color)
+        name_guess = Counter(
+            n[1] for n in near).most_common(1)[0][0]
+        color = yield name_guess
+
+
+def process_colors(dataset_filename="colors.csv"):
+    model_colors = load_colors(dataset_filename)
+    get_neighbors = nearest_neighbors(model_colors, 5)
+    get_color_name = name_colors(get_neighbors)
+    output = write_results()
+    next(output)
+    next(get_neighbors)
+    next(get_color_name)
+
+    for color in generate_colors():
+        name = get_color_name.send(color)
+        output.send((color, name))
+
+
+results = write_results()
+next(results)
+for i in range(3):
+    print(i)
+    results.send(((i, i, i), i * 10))
+
+process_colors()
 # End
