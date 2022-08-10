@@ -27,7 +27,7 @@ def calculate(expression, globalContaxt, localContaxt, result, current):
 def update(localContaxt, result, current):
     localContaxt[current.letter] = result
     current.letter = chr(ord(current.letter) + 1)
-    if current.etter > "Z" : # We Only support 26 variables
+    if current.letter > "Z" : # We Only support 26 variables
         current.letter = "A" 
 
 
