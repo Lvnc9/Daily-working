@@ -43,7 +43,7 @@ class Presidents:
 for pres in iter(Presidents('George Washington'), "Georg W. Bush"):
     print(pres, end="")
 
-
+# implementing __iter__
 class Bag:
     """ __iter__ had been implemented for counting 
     the times the items had been inserted into the self.items """
