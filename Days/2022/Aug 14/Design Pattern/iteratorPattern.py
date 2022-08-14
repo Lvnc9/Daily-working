@@ -43,4 +43,40 @@ class Presidents:
 for pres in iter(Presidents('George Washington'), "Georg W. Bush"):
     print(pres, end="")
 
+
+class Bag:
+    """ __iter__ had been implemented for counting 
+    the times the items had been inserted into the self.items """
+
+    def __init__(self, items=None):
+        self.__bag = {}
+        if items is not None:
+            for item in items:
+                self.add(item)
+        
+    def add(self, item):
+        self.__bag[item] = self.__bag.get(item, 0) + 1
+    
+    def __delitem__(self, item):
+        if self.__bag[item] is not None:
+            self.__bag[item] -= 1
+            if self.__bag[item] <= 0:
+                del self.__bag[item]
+        else:
+            raise KeyError(str(item))
+    
+    def count(self, item):
+        return self.__bag.get(item, 0)
+    
+    def __contains__(self, item):
+        return item in self.__bag
+    
+    def __len__(self):
+        return sum(count for count in self.__bag.values())
+    
+    def __iter__(self):
+        for item, count in self.__bag.items():
+            for _ in range(count):
+                yield item
+
 # End
