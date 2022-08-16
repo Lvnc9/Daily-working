@@ -81,4 +81,10 @@ class Text(Mediated):
     @property
     def text(self):
         return self.__text
+    
+    @text.setter
+    def text(self, text):
+        if self.text != text:
+            self.__text = text
+            self.on_change()
 # End
