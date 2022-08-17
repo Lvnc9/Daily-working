@@ -16,6 +16,16 @@ def coroutine(func):
 
 class Form:
 
+    def __init__(self):
+        self.create_mediator()
+        self.create_widget()
+
+    def create_widget(self):
+        self.nameText = Text()
+        self.emailText = Text()
+        self.okButton = Button("OK")
+        self.cancelBotton = Button("Cancel")
+
     def create_mediator(self):
         self.mediator = self._update_ui_mediator(self.clicked_mediator())
         for widget in (self.nameText, self.emailText,
@@ -53,6 +63,34 @@ class Mediated:
     
     def on_change(self):
         if self.mediator is not None:
-            self.mediator.senf(self)
+            self.mediator.send(self)
 
+class Button(Mediated):
+
+    def __init__(self, text=""):
+        super().__init__()
+        self.text = text
+        self.enabled = True
+    
+    def clicked(self):
+        if self.enabled:
+            self.on_change()
+
+
+class Text(Mediated):
+
+    def __init__(self, text=""):
+        super().__init__()
+        self.__text = text
+    
+    @property
+    def text(self):
+        return self.__text
+    
+    @text.setter
+    def text(self, text):
+        if self.text != text:
+            self.__text = text
+            self.on_change()
+        
 # End
