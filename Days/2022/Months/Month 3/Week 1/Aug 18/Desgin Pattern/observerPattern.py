@@ -15,14 +15,14 @@ class Observed:
 
     def observers_add(self, observer, *observers):
         # I like usingg itertools.chain(x, y) !
-        for observer in itertools.chain((observer,), *observers):
+        for observer in itertools.chain((observer,), observers):
             self.__observers.add(observer)
             observer.update(self)
     
     def observer_discard(self, observer):
         self.__observers.discard(observer)
     
-    def observer_notify(self, observer):
+    def observer_notify(self):
         for observer in self.__observers:
             observer.update(self)
 
@@ -31,6 +31,8 @@ class SliderModel(Observed):
 
     def __init__(self, value, minimum, maximum):
         super().__init__()
+        # This most exist before setting property setters
+        self.__minimum = self.__value = self.__maximum = None
         self.value = value
         self.minimum = minimum
         self.maximum = maximum 
@@ -42,7 +44,7 @@ class SliderModel(Observed):
     @value.setter
     def value(self, value):
         if self.__value != value:
-            self.value = value
+            self.__value = value
             self.observer_notify()
 
     @property
@@ -61,8 +63,8 @@ class SliderModel(Observed):
 
     @maximum.setter
     def maximum(self, max):
-        if self.__max != max:
-            self.__max = max
+        if self.__maximum != max:
+            self.__maximum = max
             self.observer_notify()
 
 
@@ -102,7 +104,10 @@ def main():
     for value in (7, 23, 37):
         model.value = value             # liveView produces output
     for value, timestamp in historyView.data:
-        print("{:3} {}".format(value, datetime.datetime.fromtimestamp(
+        print("{:3} {}".format(value, datetime.fromtimestamp(
             timestamp)), file=sys.stderr)
+
+if __name__ == "__main__":
+    main()
 
 # End
