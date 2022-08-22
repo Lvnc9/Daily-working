@@ -15,7 +15,7 @@ class Counter:
         else:
             for name in names:
                 if not name.isidenentifier():
-                    raise ValueError("NAME MUST BE A VALID EDENTIFIER")
+                    raise ValueError("NAME MUST BE A VALID IDENTIFIER")
                 setattr(self, name, 0)
     
     def __call__(self, event):
@@ -30,7 +30,7 @@ class Event:
 
     def __init__(self, name, count=1):
         if not name.isidentifier():
-            raise ValueError("NAME MUST BE A VALID EDENTIFIER")
+            raise ValueError("NAME MUST BE A VALID IDENTIFIER")
         self.name = name
         self.count = count
 
