@@ -69,7 +69,7 @@ class HtmlWordCounter(AbstractWordCounter):
             self.text = []
             self.count = 0
             
-        def handle_starttag(self, tag):
+        def handle_starttag(self, tag:str):
             if tag in {"scripts", "style"}:
                 self.intext = False
         
