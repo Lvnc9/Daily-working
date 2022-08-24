@@ -4,7 +4,7 @@
 # Modules
 import tempfile
 import shutil
-import os.path
+import os
 
 
 def pytest_funcarg_temp_dir(request):
@@ -13,9 +13,10 @@ def pytest_funcarg_temp_dir(request):
 
     def cleanup():
         shutil.rmtree(dir)
+    # This files plays the teardown
     request.addfinalizer(cleanup)
 
-    return dict
+    return dir
 
 def test_os_office(temp_dir):
     os.mkdir(os.path.join(temp_dir, "a"))
