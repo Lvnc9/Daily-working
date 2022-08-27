@@ -5,7 +5,15 @@
 import os
 import importlib
 import warnings
-import numpy
+
+
+# Checking numpy
+try:
+    import numpy
+except ImportError:
+    numpy = None
+    import array
+
 
 
 # Walking through the current directory and checking for all the images
@@ -53,14 +61,35 @@ class Image:
     @classmethod
     def from_data(cls, width, pixels):
         return cls(width, pixels)
+
+    def load(self, filename):
+        module = Image._choose_module("can_load", filename)
+        if module is not None:
+            self.width = self.height = None
+            self.meta = {}
+            self.filanme = filename
+            module.load(filename)
+            self.fileanme = filename
+        else:
+            raise Error(f"""no Image Module can load files of type
+                        {os.path.splitext(filename)[0]}""")
+
+
+class Error(Exception): pass
+
+
+def create_array(width, height, background=None):
+    if numpy is not None:
+        if background is not None:
+            return numpy.zeros(width * height, dtype=numpy.uint32)
+        else:
+            iterable = (background for _ in range(width * height))
+            return numpy.fromiter(iterable, numpy.uint32)
+    else:
+        type_code = "I" if array.array("I").itemsize >= 4 else "L"
+        background = (background if background is not None
+                    else ColorForName["transparent"])
+        return array.array(type_code, [background] * width * height)
     
-    def create_array(width, height, background=None):
-        if numpy is not None:
-            if background is not None:
-                return numpy.zeros(width * height, dtype=numpy.uint32)
-            else:
-                iterable = (background for _ in range(width * height))
-                return numpy.fromiter(iterable, numpy.uint32)
-                
 
 # End
