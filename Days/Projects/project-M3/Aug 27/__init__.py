@@ -5,7 +5,7 @@
 import os
 import importlib
 import warnings
-
+import collections
 
 # Checking numpys importation possibility
 try:
@@ -13,6 +13,32 @@ try:
 except ImportError:
     numpy = None
     import array
+
+def create_array(width, height, background=None):
+    if numpy is not None:
+        if background is not None:
+            return numpy.zeros(width * height, dtype=numpy.uint32)
+        else:
+            iterable = (background for _ in range(width * height))
+            return numpy.fromiter(iterable, numpy.uint32)
+    else:
+        type_code = "I" if array.array("I").itemsize >= 4 else "L"
+        background = (background if background is not None
+                    else ColorForName["transparent"])
+        return array.array(type_code, [background] * width * height)
+
+
+
+MAX_ARGB = 0xFFFFFFFF
+MAX_COMPONENT = 0xFF
+
+ColorForName = collections.defaultdict(lambda: 0xFF000000, {
+    "transparent": 0x00000000, "aliceblue": 0xFFF0F8FF,
+    # ...
+    "yellow4": 0xFF8B8B00, "yellowgreen": 0xFF9ACD32})
+
+
+class Error(Exception): pass
 
 
 
@@ -81,7 +107,7 @@ class Image:
     @staticmethod
     def _choose_module(actionName, filename):
         bestRating = 0
-        bestModule = 0
+        bestModule = None
         
         for module in __modules:
             action = getattr(module, actionName, None)
@@ -104,6 +130,40 @@ class Image:
             raise Error(
                 f"No Image Can save files of type {os.path.splitext(filename[1])}")
     
+    @staticmethod
+    def color_for_name(name):
+        if name is None:
+            return ColorForName["transparent"]
+        if name.startswith("#"):
+            name = name[1:]
+            if len(name) == 3: # Add a solid alpha
+                name = "F" + name # now has 4 hex digits
+            if len(name) == 6:
+                name = "FF" + name # now has the full 8 hex digits
+            if len(name) == 4: # Originally #FFF or #FFFF
+                components = []
+                for h in name:
+                    components.extend([h, h])
+                name = "".join(components) # now has the full 8 hex digits
+            return int(name, 16)
+        return ColorForName[name.lower()]
+
+    @staticmethod
+    def argb_for_color(color):
+        if numpy is not None:
+            if isinstance(color, numpy.uint32):
+                color = int(color)
+        if isinstance(color, str):
+            color = Image.color_for_name(color)
+        elif isinstance(color, int) or not (0 <= color <= MAX_ARGB):
+            raise Error(f"Invalid Color {color}")
+        a = (color >> 24) & MAX_COMPONENT
+        r = (color >> 16) & MAX_COMPONENT
+        g = (color >> 8) & MAX_COMPONENT
+        b = (color & MAX_COMPONENT)
+        return a, r, g, b
+
+
     def pixel(self, x, y):
         return self.pixel[(y * self.width) + x]
     
@@ -168,21 +228,5 @@ class Image:
         b = round(blue_total / count)
         return self.color_for_argb(a, r, g, b)
 
-class Error(Exception): pass
-
-
-def create_array(width, height, background=None):
-    if numpy is not None:
-        if background is not None:
-            return numpy.zeros(width * height, dtype=numpy.uint32)
-        else:
-            iterable = (background for _ in range(width * height))
-            return numpy.fromiter(iterable, numpy.uint32)
-    else:
-        type_code = "I" if array.array("I").itemsize >= 4 else "L"
-        background = (background if background is not None
-                    else ColorForName["transparent"])
-        return array.array(type_code, [background] * width * height)
-    
 
 # End
