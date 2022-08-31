@@ -163,6 +163,17 @@ class Image:
         b = (color & MAX_COMPONENT)
         return a, r, g, b
 
+    @staticmethod
+    def color_for_argb(a, r, g, b):
+        """returns an int representing the given ARGB value"""
+        if (0 <= a <= MAX_COMPONENT and 0 <= r <= MAX_COMPONENT and
+            0 <= g <= MAX_COMPONENT and 0 <= b <= MAX_COMPONENT):
+            color = 0
+            color |= (((a & MAX_COMPONENT) << 24) |
+                      ((r & MAX_COMPONENT) << 16) |
+                      ((g & MAX_COMPONENT) << 8) | (b & MAX_COMPONENT))
+            return color
+        raise Error(f"invalid argb {a}, {r}, {g}, {b}")
 
     def pixel(self, x, y):
         return self.pixel[(y * self.width) + x]
