@@ -2,6 +2,7 @@
 # Start
 # Providing space for using png functionality
 # Modules
+import os
 
 try:
     import png
