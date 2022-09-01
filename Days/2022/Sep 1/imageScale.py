@@ -7,6 +7,12 @@ import argparse
 import multiprocessing
 import os
 import sys
+import collections
+import Qtrac
+
+# this is a count of how many images have been copied how many have been scaled
+Result = collections.namedtuple("Result", "copied scale name")
+Summary = collections.namedtuple("Summary", "todo copied sclaed cancel")
 
 
 def handle_commandline():
@@ -42,7 +48,12 @@ def handle_commandline():
 
 
 
-
+def main():
+    size, smooth, source, target, concurrency = handle_commandline()
+    Qtrac.report("starting...")
+    summary = scale(size, smooth, source, target ,concurrency)
+    summarize(summary, concurrency)
+    
 
 
 # End
