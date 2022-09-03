@@ -3,6 +3,12 @@
 # Multiprocessing for running different parts of programm and 
 # probably sharing data between of them
 # Modules
+import sys
+
+if sys.version_info < (3, 2):
+    print("requires Python 3.2+ for concurrent.futures")
+    sys.exit(1)
+
 import argparse
 import multiprocessing
 import os
@@ -134,7 +140,7 @@ def main():
     Qtrac.report("starting...")
     summary = scale(size, smooth, source, target ,concurrency)
     summarize(summary, concurrency)
-
+    return summary
 
 if __name__ == "__main__":
     main()
