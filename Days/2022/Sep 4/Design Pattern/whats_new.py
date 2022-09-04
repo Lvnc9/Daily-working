@@ -32,7 +32,7 @@ def create_threads(limit, jobs, results, concurrency):
     thread.start()
 
 
-def worker(limit, jobs, result):
+def worker(limit, jobs, results):
     while True:
         try:
             feed = jobs.get()
@@ -41,7 +41,10 @@ def worker(limit, jobs, result):
                 Qtrac.report(result, True)
             elif result is not None:
                 Qtrac.report(f"read {result[0][0:46]}")
-                
+                results.put(result)
+        finally:
+            jobs.task_done()
+    
 
 
 
