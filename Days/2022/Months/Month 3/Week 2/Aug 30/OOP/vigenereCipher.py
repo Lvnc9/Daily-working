@@ -16,7 +16,7 @@ class VigenereCipher:
         return chr(ord("A") + (plain_num + keyword_num) % 26)
 
     def extend_keyword(self, number):
-        repeats = number // len(self.keywrod) + 1
+        repeats = number // len(self.keyword) + 1
         return (self.keyword * repeats) % 26
     
     def encode(self, plaintext:str):
@@ -27,7 +27,6 @@ class VigenereCipher:
             cipher.append(self.combine_character(p, k))
         return "".join(cipher)
     
-
 
 
 
