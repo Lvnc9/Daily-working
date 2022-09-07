@@ -52,4 +52,5 @@ class LogWriter:
 
 
 sample = LogWriter()
+sample.critical('something happend')
 # End
