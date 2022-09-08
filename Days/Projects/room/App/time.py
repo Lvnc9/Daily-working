@@ -8,6 +8,7 @@ import os
 import sys
 
 
+
 def cleaner():
     if sys.platform.startswith("win"):
         os.system("cls")
@@ -26,17 +27,19 @@ def another_time_changer():
         if minitue == 59:
             minitue = 0
             hour += 1
-            os.system("clear")
-            return f"{hour}:00"
+            cleaner()
+            print("{hour}:00")
         if minitue < 10:
-            print(f"{hour}:0{minitue}")
-            
-        else:
+            cleaner()
+            print(f"{hour}:0{minitue}") 
+        if minitue >= 10:
+            cleaner()
             print(f"{hour}:{minitue}")
         if hour == 24:
+            cleaner()
             hour = 0
             minitue = 0
-            return "00:00"
+            print("00:00")
         minitue += 1
 
 another_time_changer()
