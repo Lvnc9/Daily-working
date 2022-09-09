@@ -1,15 +1,21 @@
-#!/usr/bin/python
+#!/usr/bin/env
 # Start
 # MAC Module
 # Modules
 import logMac
 import collections 
-
+import pprint
 
 class Mac:
-    """ USAGE  will get added as soon as possible """
+    """ USAGE will get added as soon as possible """
     
     logger = logMac.LogWriter()
+    logger.file_name = "mac_loger.log"
+    
+    @staticmethod
+    def pprinter(dictiona):
+        return pprint.pprint(dictiona)
+
     class Nature:
         
         def metal(self, shape:str, metalType:str, flexibility:str, color:str):
@@ -20,7 +26,9 @@ class Mac:
                 "flexibility" : flexibility,
                 "color" : color
             }
-            Mac.logger.info(f"metal with {metal} attribute had saved")
+            pretified = Mac.pprinter(metal)
+            Mac.logger.info(f"metal with {pretified} attribute had saved")
+            Mac.pprinter()
             return metal
 
 
@@ -32,6 +40,7 @@ class Mac:
                 "flexibility" : flexibility,
                 "color" : color
             }
+            pretified = Mac.pprinter(wood)
             Mac.logger.info(f"wood with {wood} attribute had saved")
             return wood
 
@@ -43,6 +52,7 @@ class Mac:
                 "flexibility" : flexibility,
                 "color" : color
             }        
+            pretified = Mac.pprinter(plastic)
             Mac.logger.info(f"plastic with {plastic} attribute had saved")
             return plastic
 
@@ -54,17 +64,18 @@ class Mac:
                 "flexibility" : flexibility,
                 "color" : color
             }
+            pretified = Mac.pprinter(glass)
             Mac.logger.info(f"glass with {glass} attribute had saved")
             return glass
 
     class Physicality:
         pass
 
-    
+
     class Living():
         pass
 
-    
+
 lala = Mac.Nature.glass('fsd', 'gdsg', 'gds', 'gdsg', 'ggs g')
 print(lala)
 

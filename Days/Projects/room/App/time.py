@@ -61,7 +61,5 @@ def another_time_changer(filename=None):
             file.write(year, " ", month,
                     " ", wday, " ", hour, " ", minitue)
 
-
-
 another_time_changer()
 # End

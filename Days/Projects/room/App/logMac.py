@@ -1,6 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env
 # Start
 # This Module is for helping the MAC.py for logging 
+from pathlib import Path
 
 
 class LogWriter:
@@ -50,7 +51,4 @@ class LogWriter:
         return setattr(self.instance, name)
 
 
-
-sample = LogWriter()
-sample.critical('something happend')
 # End
