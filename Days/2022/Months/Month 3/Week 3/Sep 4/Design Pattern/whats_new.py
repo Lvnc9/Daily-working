@@ -13,7 +13,7 @@ import argparse
 
 def handle_commandline():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-l", "--limit" type=int, default=0,
+    parser.add_argument("-l", "--limit", type=int, default=0,
                         help="the maximum item per feed [default: unlimited]")
         
     parser.add_argument("-c", "--concurrency", type=int,
@@ -44,8 +44,6 @@ def worker(limit, jobs, results):
                 results.put(result)
         finally:
             jobs.task_done()
-    
-
 
 
 # Where code gathers
