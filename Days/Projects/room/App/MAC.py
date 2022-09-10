@@ -16,52 +16,6 @@ def pprinter(dictiona):
     return pprint.pprint(dictiona)
 
 
-def animal_behaviors(cat=None, dog=None, bird=None, fish=None):
-    if cat:
-        attrs = {
-            "sleeping" : True,
-            "friendly" : True,
-            "jumpping" : True,
-            "sound" : True,
-            "mew" : True,
-            "snoring" : True,
-            "moving" : True,
-        }
-        return attrs
-
-    if dog:
-        attrs = {
-            "sleeping" : True,
-            "friendly" : True,
-            "sound" : True,
-            "jumpping" : True,
-            "barking" : True,
-            "moving" : True
-        }
-        return attrs
-    
-    if bird:
-        attrs = {
-            "sleeping" : True,
-            "friendly" : True,
-            "sound" : True,
-            "flying" : True,
-            "talking" : True,
-        }
-        return attrs
-
-    if fish:
-        attrs = {
-            "sleeping" : True,
-            "friendly" : False,
-            "jumpping" : False,
-            "sound" : False,
-            "swiming" : True,
-            "bobbling" : True
-        }
-        return attrs
-
-
 class Nature:
     
     def metal(self, shape:str, metalType:str, flexibility:str, color:str):
@@ -114,28 +68,101 @@ class Nature:
         return glass
 
 
-class Living():
+class Living:
 
-    def __init__(self):
-        self.logger = logMac.LogWriter()
-        logger.file_name = "mac_loger.log"
+    @classmethod
+    def animal_behaviors(cls, *pets):
+        for pet in pets:
+            n_pet = Pet.animal_list(pet)
+            if n_pet == "cat":
+                attrs = {
+                    "sleeping" : True,
+                    "friendly" : True,
+                    "jumpping" : True,
+                    "sound" : True,
+                    "mew" : True,
+                    "snoring" : True,
+                    "moving" : True,
+                }
+                return attrs
+            elif pet == "dog":
+                attrs = {
+                    "sleeping" : True,
+                    "friendly" : True,
+                    "sound" : True,
+                    "jumpping" : True,
+                    "barking" : True,
+                    "moving" : True
+                }
+                return attrs
+            elif pet == "bird":
+                attrs = {
+                    "sleeping" : True,
+                    "friendly" : True,
+                    "sound" : True,
+                    "flying" : True,
+                    "talking" : True,
+                }
+                return attrs
+            elif pet == "fish":
+                attrs = {
+                    "sleeping" : True,
+                    "friendly" : False,
+                    "jumpping" : False,
+                    "sound" : False,
+                    "swiming" : True,
+                    "bobbling" : True
+                }
+                return attrs
+            else:
+                raise ValueError("")
 
-    def pet(self, cat=None, dog=None, fish=None, bird=None):
+
+class Pet(Living):
+    """ A List of pets from cat to fishes 
+    there are kinds of pets you can choose
+    for seeing the list you should call Pet.animal_list()
+    if you choose any cat, dog, bird or fish outside of the list
+    it will raise an Error"""
+
+    def __init__(self, cat=None, dog=None, bird=None, fish=None):
+        self.cat = cat
+        self.dog = dog
+        self.bird = bird
+        self.fish = fish
+
         if cat: 
-            animal_behaviors(cat)
-        
+            Living.animal_behaviors(cat)
+            
         if dog:
-            animal_behaviors(dog)
+            Living.animal_behaviors(dog)
         
         if fish:
-            animal_behaviors(fish)
+            Living.animal_behaviors(fish)
+
+    @staticmethod
+    def animal_list(pet):
+        """ A list of Available Cats, Dogs, Birds or fishes 
+        you only can use this avalilable pets"""
         
-        if bird:
-            animal_behaviors(bird)
+        birds = [
+                "kiwi",
+                "eagle",
+                "parret",
+                "crow",
+                "pigeon",
+                "owl"]
 
-    def planet(self, small_tree=None, cactus=None, stem_planet=None):
-        pass
-
+        if pet == "bird":
+            return birds
+        elif pet == "cat":
+            return cats
+        elif pet == "dog":
+            return dogs
+        elif pet == "fish":
+            return fihses
+        else:
+            raise ValueError("The Entered Pet is not added yet")
 
 def physicality(hardship, unit, weight, area):
     physica = {
@@ -148,5 +175,5 @@ def physicality(hardship, unit, weight, area):
     logger.info(f"physicality with {physica} attribute had saved")
     return physica
 
-example = Living.pet()
+
 # End
