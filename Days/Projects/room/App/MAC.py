@@ -141,6 +141,52 @@ class Pet(living.Living):
             else:
                 raise ValueError("CHOSEN PET DOESN'T EXIST")
 
+class Plant(living.Living):
+    """ A list of all vase, color and usage exists 
+        you only can use this avalilable pets::
+        self.planet_list(small_tree) -> list[small_tree_types] """
+
+    def small_tree(self, vase, color, usage):
+        pass
+
+    def cactus(self, vase, color, usage):
+        pass
+
+    def stem_plant(self, vase, color, usage):
+        pass
+
+    
+    def plant_list(self, plant):
+        plants = {
+            "small_tree" : [
+                        "apple",
+                        "dog Wood",
+                        "chinese FringeTree"
+                        "hornbeam",
+                        "juniper",
+                        "japanese Snowbell"
+                    ],
+            
+            "cactus" : [
+                        "bunny Ears",
+                        "chin",
+                        "saguaro",
+                        "easter"
+                        "queen Of The Night"
+                        "cholla"
+            ],
+
+            "stem_plant" : [
+                        "super red",
+                        "hemianthus glomeratus",
+                        "Limnophila sessiliflora"
+            ]
+        }
+        for key in plants.keys():
+            if key == plant:
+                return plants[plant]
+            else:
+                raise ValueError("CHOSEN PLANT DOESN'T EXIST")
 
 def physicality(hardship, unit, weight, area):
     physica = {

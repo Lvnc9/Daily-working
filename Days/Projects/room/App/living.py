@@ -40,8 +40,25 @@ class Living:
             "bobbling" : True
         }
 
-    @classmethod
-    def name_adding(self, name):
+        self.small_tree = {
+            "needs_water" : True,
+            "needs_sun" : True,
+            "need_music" : True,
+            "daily_feeding" : True,
+            "leaf" : True,
+            "wheter_changes" : True,
+        }
         
+        self.cactuses = {
+        "needs_water" : True,
+        "need_music" : True, 
+        "daily_feeding" : False,
+        "leaf" : False,
+        "wheter_changes" : False
+            }
+        
+        self.stem_plant = {
+            
+        }
 
 # End
