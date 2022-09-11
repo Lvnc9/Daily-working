@@ -4,6 +4,7 @@
 # Modules
 import multiprocessing 
 import threading
+import webbrowser
 import Feed
 import queue
 import os
@@ -46,7 +47,46 @@ def worker(limit, jobs, results):
             jobs.task_done()
 
 
-# Where code gathers
+def add_jobs(filename, jobs):
+    for todo, feed in enumerate(Feed.iter(filename), start=1):
+        jobs.put(feed)
+    return todo
+
+
+def process(todo, jobs, results, concurrency):
+    canceled = False
+    try:
+        jobs.join() # Wait for all the work to be done
+    except KeyboardInterrupt: # May not work on Windows
+        Qtrac.report("canceling...")
+        canceled = True
+    if canceled:
+        done = results.qsize()
+    else:
+        done, filename = output(results)
+    Qtrac.report("read {}/{} feeds using {} threads{}".format(done, todo,
+                concurrency, " [canceled]" if canceled else ""))
+    print()
+    if not canceled:
+        webbrowser.open(filename)
+
+def output(results):
+    done = 0
+    filename = os.path.join(tempfile.gettempdir(), "whatsnew.html")
+    with open(filename, "wt", encoding="utf-8") as file:
+        file.write("<!doctype html>\n")
+        file.write("<html><head><title>What's New</title></head>\n")
+        file.write("<body><h1>What's New</h1>\n")
+        while not results.empty(): # Safe because all jobs have finished
+            result = results.get_nowait()
+            done += 1
+            for item in result:
+                file.write(item)
+        file.write("</body></html>\n")
+    return done, filename
+
+
+# Where code becomes a building
 def main():
     limit, concurrency = handle_commandline()
     Qtrac.report("Starting...")

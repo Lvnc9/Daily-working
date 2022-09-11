@@ -2,6 +2,7 @@
 # Start
 # reading from url 
 # Modules
+from collections import namedtuple
 from html import escape
 import urllib
 import socket
@@ -36,4 +37,23 @@ def _parse(data, limit):
             break
     if output:
         return ["<ul>"] + output + ["</ul>"]
+
+
+Feed = namedtuple("Feed", "title url")
+
+def iter(filename):
+    name = None
+
+    with open(filename, "rt", encode="utf-8") as file:
+        for line in file:
+            line = line.rstrip()
+            if not line or line.startswith("#"):
+                continue
+            if name is None:
+                name = line
+            else:
+                yield Feed(name, line)
+                name = None
+
+
 # End
