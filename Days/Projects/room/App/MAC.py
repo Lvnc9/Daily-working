@@ -3,7 +3,6 @@
 # MAC Module
 # Modules
 import logMac
-import collections 
 import pprint
 import living
 
@@ -68,7 +67,7 @@ class Nature:
         return glass
 
 
-class Pet:
+class Pet(living.Living):
     """ A List of pets from cat to fishes 
     there are kinds of pets you can choose
     for seeing the list you should call::
@@ -76,22 +75,28 @@ class Pet:
     if you choose any cat, dog, bird or fish outside of the list
     it will raise an Error"""   
 
-    def cat(self):
-        pass
+    def cat(self, name):
+        name = {"cat" : name}
+        return name.update(self.cats)
 
-    def dog(self):
-        pass
+    def dog(self, name):
+        name = {"dog" : name}
+        return name.update(self.dogs)
 
-    def bird(self):
-        pass
 
-    def fish(self):
-        pass
+    def bird(self, name):
+        name = {"bird" : name}
+        return name.update(self.birds)
+
+    def fish(self, name):
+        name = {"fish" : name}
+        return name.update(self.fishes)
 
 
     def animal_list(self, pet):
         """ A list of Available Cats, Dogs, Birds or fishes 
-        you only can use this avalilable pets"""
+        you only can use this avalilable pets::
+            self.animal_list(dog) -> list[dog_breads]"""
         
         animals = {
             "birds" : [
@@ -133,6 +138,8 @@ class Pet:
         for key in animals.keys():
             if key == pet:
                 return animals[pet]
+            else:
+                raise ValueError("CHOSEN PET DOESN'T EXIST")
 
 
 def physicality(hardship, unit, weight, area):
