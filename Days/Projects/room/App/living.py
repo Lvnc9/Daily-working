@@ -40,25 +40,31 @@ class Living:
             "bobbling" : True
         }
 
-        self.small_tree = {
+        self.small_trees = {
             "needs_water" : True,
-            "needs_sun" : True,
+            "thorns" : False,
             "need_music" : True,
-            "daily_feeding" : True,
+            "fruite_given" : True,
             "leaf" : True,
             "wheter_changes" : True,
         }
         
         self.cactuses = {
         "needs_water" : True,
-        "need_music" : True, 
-        "daily_feeding" : False,
+        "needs_music" : True,
+        "thorns" : True, 
+        "fruite_given" : False,
         "leaf" : False,
-        "wheter_changes" : False
-            }
+        "wheter_changes" : False,
+        }
         
-        self.stem_plant = {
-            
+        self.stem_plants = {
+        "needs_water" : True,
+        "needs_music" : False,
+        "thorns" : False,
+        "fruite_given" : True,
+        "leaf" : True,
+        "wheter_changes" : True,
         }
 
 # End

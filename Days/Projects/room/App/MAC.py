@@ -76,21 +76,29 @@ class Pet(living.Living):
     it will raise an Error"""   
 
     def cat(self, name):
-        name = {"cat" : name}
-        return name.update(self.cats)
+        available_name = self.animal_list('cat')
+        if name in available_name:
+            name = {"cat" : name}
+            return name.update(self.cats)
 
     def dog(self, name):
-        name = {"dog" : name}
-        return name.update(self.dogs)
+        available_name = self.animal_list('dog')
+        if name in available_name:
+            name = {"dog" : name}
+            return name.update(self.dogs)
 
 
     def bird(self, name):
-        name = {"bird" : name}
-        return name.update(self.birds)
+        available_name = self.animal_list('bird')
+        if name in available_name:
+            name = {"bird" : name}
+            return name.update(self.birds)
 
     def fish(self, name):
-        name = {"fish" : name}
-        return name.update(self.fishes)
+        available_name = self.animal_list('fish')
+        if name in available_name:
+            name = {"fish" : name}
+            return name.update(self.fishes)
 
 
     def animal_list(self, pet):
@@ -146,14 +154,23 @@ class Plant(living.Living):
         you only can use this avalilable pets::
         self.planet_list(small_tree) -> list[small_tree_types] """
 
-    def small_tree(self, vase, color, usage):
-        pass
+    def small_tree(self, name, vase, color, usage):
+        available_name = self.plant_list('small_tree')
+        if name in available_name:
+            name = {"name" : name, "vase" : vase, "color" : color, "usage" : usage }
+            name.update(self.small_trees)
 
-    def cactus(self, vase, color, usage):
-        pass
+    def cactus(self, name, vase, color, usage):
+        available_name = self.plant_list('cactus')
+        if name in available_name:
+            name = {"name" : name, "vase" : vase, "color" : color, "usage" : usage }
+            name.update(self.small_trees)
 
-    def stem_plant(self, vase, color, usage):
-        pass
+    def stem_plant(self, name, vase, color, usage):
+        available_name = self.plant_list('stem_plant')
+        if name in available_name:
+            name = {"name" : name, "vase" : vase, "color" : color, "usage" : usage }
+            name.update(self.small_trees)
 
     
     def plant_list(self, plant):
