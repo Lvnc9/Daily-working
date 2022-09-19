@@ -3,11 +3,11 @@
 # Threading 
 # Moudles
 import multiprocessing
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
 import tempfile
 import webbrowser
-
+import Qtrac
 
 print(os.path.join(os.path.dirname(__file__), "whatsnew.dat"))
 
@@ -20,7 +20,7 @@ def main():
         for feed in Feed.iter(filename):
             future = executor.submit(Feed.read, feed, limit)
             futures.add(future)
-        done, filenmae, canceled = process(futures)
+        done, filename, canceled = process(futures)
         if canceled:
             executor.shutdown()
     Qtrac.report("read {}/{} feeds using{} threads, {}".format(
@@ -45,6 +45,31 @@ def process(futures):
                 done += 1
                 for item in result:
                     file.write(item)
+        else:
+            done = sum(1 for ok, result in results if ok and 
+                        result is not None)
+        file.write("</body></html>\n")
+    return done, filename, canceled
 
+
+def wait_for(futures):
+    canceled = False
+    results = []
+    try:
+        for future in as_completed(futures):
+            err = future.exception()
+            if err is None:
+                ok, result = future.result()
+                if not ok:
+                    Qtrac.report("read {}".format(result[0][4:-6]))
+                results.append((ok, result))
+            else:
+                raise err # Unanticipated
+    except KeyboardInterrupt():
+        Qtrac.report("canceliing...")
+        canceled = True
+        for future in futures:
+            future.cancel()
+    return canceled, results
 
 # End
