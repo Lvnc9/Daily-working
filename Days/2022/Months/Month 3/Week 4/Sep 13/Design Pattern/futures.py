@@ -8,7 +8,8 @@ import os
 import tempfile
 import webbrowser
 import Qtrac
-
+import Feed 
+import argparse
 
 def handle_commandline():
     parser = argparse.ArgumentParser()

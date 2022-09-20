@@ -1,5 +1,10 @@
 #!/usr/bin/python
 # Start
+# Modules
+from collections import namedtuple
+
+
+Feed = namedtuple("Feed", "title url")
 
 def iter(filename):
     name = None
