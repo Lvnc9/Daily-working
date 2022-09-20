@@ -9,6 +9,20 @@ import tempfile
 import webbrowser
 import Qtrac
 
+
+def handle_commandline():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-l", "--limit", type=int, default=0,
+                        help="the maximum item per feed [default: unlimited]")
+        
+    parser.add_argument("-c", "--concurrency", type=int,
+                        default=multiprocessing.cpu_count() * 4,
+                        help="specify the currency (for debugging and "
+                        "timing [default: %(default)d]")
+    args = parser.parse_args()
+    return args.limit, args.concurrency
+
+
 print(os.path.join(os.path.dirname(__file__), "whatsnew.dat"))
 
 def main():
@@ -24,7 +38,7 @@ def main():
         if canceled:
             executor.shutdown()
     Qtrac.report("read {}/{} feeds using{} threads, {}".format(
-        done, len(futures), concurrency, " [canceled]" if canceled else ""))
+                done, len(futures), concurrency, " [canceled]" if canceled else ""))
 
     print()
     if not canceled:
