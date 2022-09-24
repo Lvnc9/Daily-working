@@ -17,6 +17,11 @@ if _libraryName is None:
 
 _LibHyphen = ctypes.cdll(_libraryName)
 
+_un_load = _LibHyphen.hnj_hyphen_free
+_un_load.argtypes = [ctypes.c_void_p]
+_un_load.restype = None
+
+
 
 
 

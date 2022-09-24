@@ -78,7 +78,7 @@ class Character:
         self.italic = italic
     
     def __str__(self):
-        
+        pass
 
 
 
