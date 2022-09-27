@@ -2,6 +2,7 @@
 # Start
 # Working on Unknown
 # Modules
+import atexit
 import ctypes
 
 class Error(Exception): pass
@@ -25,6 +26,25 @@ _unload.restype = None
 
 
 
+_hdictForFilename = {}
 
+def _get_hdict(filename):
+    if filename not in _hdictForFilename:
+        hdict = _load(ctypes.create_string_buffer(
+                    filename.encode("utf-8")))
+        if hdict is None:
+            raise Error("failed to load '{}'".format(filename))
+        _hdictForFilename[filename] = hdict
+    hdict = _hdictForFilename.get(filename)
+    if hdict is None:
+        raise Error("failed to load '{}'".format(filename))
+    return hdict
+
+
+def _cleanup():
+    for hyphens in _hdictForFilename.values():
+        _unload(hyphens)
+    
+atexit.register(_cleanup)
 
 # End
