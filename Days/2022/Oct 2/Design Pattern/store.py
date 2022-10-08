@@ -22,30 +22,32 @@ class Observer:
         pass
 
     @classmethod
-    def order(cls):
+    def order(cls, ProductName):
         pass
     
-    @classmethod
-    def limit(cls):
-        pass
+    
+    def limit(self, productName, max):
+        if max:
+            self.max = self.products[productName]
+
 
 
 
 class Store(Observer):
-    ACTIVE, DORMANT = collections.namedtuple("Active", "DORMANT")
+    ACTIVE, DORMANT = collections.namedtuple("ACTIVE", "DORMANT")
 
     productId = 0
 
     def __init__(self):
         self.products = collections.defaultdict()
         self.state = Store.ACTIVE
+
     def add(self, productName:str):
         if not self.state == Store.ACTIVE:
             raise Error("NOT ACTIVATED")
         name = productName.lower().capitalize()
-        if not productName in self.products:
-            self.products[name] += 1
-
+        self.products[name] += 1
+        
     def remove(self, productName):
         if not self.state == Store.ACTIVE:
             raise Error("NOT ACTIVATED")
