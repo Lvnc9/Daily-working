@@ -9,12 +9,21 @@ import hashlib
 
 class Error(Exception): pass
 
+_User = collections.namedtuple("User", "username, sha256")
+    
+def name_for_credentials(username, password):
+    sha = hashlib.sha256()
+    sha.update(password.encode("utf-8"))
+    user = _User(username, sha.hexdigest())
+    return _Users.get(user)
+
+
 class Manager:
     """ saves meter readings and provide methods for logging
     and acquire jobs and saves results """
 
     SessionId = 0
-    UsenameSeassionId = {}
+    UsernameForSessionId = {}
     ReadingForMeter = {}
 
     def login(self, username, password):
@@ -37,14 +46,12 @@ class Manager:
                 Manager.ReadingForMeter[meter] = None
                 return meter
 
+    def _username_for_sessionId(self, sessionId):
+        try:
+            return Manager.UsernameForSessionId[sessionId]
+        except KeyError:
+            raise Error("Invalid session ID")
 
-_User = collections.namedtuple("User", "username, sha256")
-    
-def name_for_credentials(username, password):
-    sha = hashlib.sha256()
-    sha.update(password.encode("utf-8"))
-    user = _User(username, sha.hexdigest())
-    return _Users.get(user)
 
 
 
