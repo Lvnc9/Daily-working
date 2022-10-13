@@ -6,11 +6,13 @@ import random
 import xmlrpc
 import collections
 import hashlib
+import datetime
 
 class Error(Exception): pass
 
 _User = collections.namedtuple("User", "username, sha256")
-    
+Reading = collections.namedtuple("Reading", "when reading reason username")
+
 def name_for_credentials(username, password):
     sha = hashlib.sha256()
     sha.update(password.encode("utf-8"))
@@ -39,7 +41,7 @@ class Manager:
     def get_job(self, sessionId):
         self._username_for_sessionId(sessionId)
         while True: # Create fake meter
-            kind = random.choise("GE")
+            kind = random.choice("GE")
             meter = "{}{}".format(kind, random.randint(40000,
                     99999 if kind == "G" else  999999))
             if meter not in Manager.ReadingForMeter:
@@ -52,6 +54,20 @@ class Manager:
         except KeyError:
             raise Error("Invalid session ID")
 
+    def submit_reading(self, sessionId, meter, when, reading, reason=""):
+        if isinstance(when, xmlrpc.client.DateTime):
+            when = datetime.datetime.strptime(when.value,
+                            "%Y%M%D%T%H:%M%S")
+        if (not isinstance(reading, int) or reading < 0) and not reason:
+            raise Error("Invalid reading")
+        
+        if meter not in Manager.ReadingForMeter:
+            raise Error("Invalid meter ID")
+        
+        username = self._username_for_sessionId(sessionId)
+        reading = Reading(when, reading, reason, username)
+        Manager.ReadingForMeter[meter] = reading
+        return True
 
 
 
