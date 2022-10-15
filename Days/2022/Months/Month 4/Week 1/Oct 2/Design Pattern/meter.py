@@ -2,16 +2,32 @@
 # Start
 # NETWORKING
 # Modules
+import argparse
 import random
+import sys
 import xmlrpc
 import collections
 import hashlib
 import datetime
+import sys
 
-class Error(Exception): pass
 
 _User = collections.namedtuple("User", "username, sha256")
 Reading = collections.namedtuple("Reading", "when reading reason username")
+
+HOST = "localhost"
+PORT = 11002
+
+def handle_commandline():
+    parser = argparse.ArgumentParser(conflict_handler="resolve")
+    parser.add_argument("-h", "--host", default=HOST, type=str,
+                        help="hosname [default %(default)s")
+    parser.add_argument("-p", "--port", default=PORT, type=int,
+                        help="port number [default %(defaults)d")
+    parser.add_argument("--notify", help="specify a notification file")
+
+class Error(Exception): pass
+
 
 def name_for_credentials(username, password):
     sha = hashlib.sha256()
@@ -68,6 +84,42 @@ class Manager:
         reading = Reading(when, reading, reason, username)
         Manager.ReadingForMeter[meter] = reading
         return True
+
+    def get_status(self, sessionId):
+        username = self._username_for_sessionId(sessionId)
+        count = total = 0
+        for reading in Manager.ReadingForMeter.values():
+            if reading is not None:
+                total += 1
+                if reading is not None:
+                    total += 1
+                    if reading.username == username:
+                        count += 1
+        return count, total
+
+    def _dump(self, file=sys.stdout):
+        for meter, reading in Manager.ReadingForMeter.items():
+            if reading is not None:
+                print(f"""{meter}={reading.reading}
+                        {reading.when.isoinfo()[:16]}@{reading.reason}
+                        [{reading.username}]""")
+
+
+
+
+def main():
+    host, port, notify = handle_argumant()
+    manager, server = setup(host, port)
+    print(f"Meter server start at {datetime.datetime.now().isoformat()[:19]} on {host}:{port}{PATH}")
+    try:
+        if notify:
+            with open(notify, "wb") as file:
+                file.write(b'\n')
+            server.serve_forever()
+        except KeyboardInterrupt:
+            print("\rMeter server shutdown at {}".format(
+                datetime.datetime.now().isoformat()[:19]))
+        Manager._dump()
 
 
 
