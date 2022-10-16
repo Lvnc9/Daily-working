@@ -10,21 +10,24 @@ import collections
 import hashlib
 import datetime
 import sys
-
+import datetime 
 
 _User = collections.namedtuple("User", "username, sha256")
 Reading = collections.namedtuple("Reading", "when reading reason username")
 
 HOST = "localhost"
 PORT = 11002
+PATH = "/meter"
 
-def handle_commandline():
+def handle_arguments():
     parser = argparse.ArgumentParser(conflict_handler="resolve")
     parser.add_argument("-h", "--host", default=HOST, type=str,
                         help="hosname [default %(default)s")
     parser.add_argument("-p", "--port", default=PORT, type=int,
                         help="port number [default %(defaults)d")
     parser.add_argument("--notify", help="specify a notification file")
+    args = parser.parse_args()
+    return args.host, args.port, args.notify
 
 class Error(Exception): pass
 
@@ -102,13 +105,24 @@ class Manager:
             if reading is not None:
                 print(f"""{meter}={reading.reading}
                         {reading.when.isoinfo()[:16]}@{reading.reason}
+
                         [{reading.username}]""")
+def setup(host, port):
+    manager = Meter.Manager()
+    server = xmlrpc.server.SimpleXMLRPCServer((host, port),
+                requestHandler=RequestHandler, logRequests=False)
+    server.register_introspection_functions()
+    for method in (manager.login, manager.get_job, manager.submit_reading,
+                    manager.get_status):
+        server.register_function(method)
+        return manager, server
 
-
+class Requesthandler(xmlrpc.server.SimpleXMLRPCRequestHandler):
+    rpc_path = (PATH)
 
 
 def main():
-    host, port, notify = handle_argumant()
+    host, port, notify = handle_arguments()
     manager, server = setup(host, port)
     print(f"Meter server start at {datetime.datetime.now().isoformat()[:19]} on {host}:{port}{PATH}")
     try:
@@ -116,11 +130,13 @@ def main():
             with open(notify, "wb") as file:
                 file.write(b'\n')
             server.serve_forever()
-        except KeyboardInterrupt:
-            print("\rMeter server shutdown at {}".format(
-                datetime.datetime.now().isoformat()[:19]))
-        Manager._dump()
+    except KeyboardInterrupt:
+        print("\rMeter server shutdown at {}".format(
+            datetime.datetime.now().isoformat()[:19]))
+        manager._dump()
 
 
+"8196775931"
+""" esfahan, serah malek shahr, baharestan sharghi, kooche 11 salmman, bonbast melia, pelak 6, vahed 1 """
 
 # End
