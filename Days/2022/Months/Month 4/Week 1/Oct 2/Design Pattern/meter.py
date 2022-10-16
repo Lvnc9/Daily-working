@@ -107,6 +107,7 @@ class Manager:
                         {reading.when.isoinfo()[:16]}@{reading.reason}
 
                         [{reading.username}]""")
+
 def setup(host, port):
     manager = Meter.Manager()
     server = xmlrpc.server.SimpleXMLRPCServer((host, port),
@@ -117,8 +118,10 @@ def setup(host, port):
         server.register_function(method)
         return manager, server
 
+
 class Requesthandler(xmlrpc.server.SimpleXMLRPCRequestHandler):
     rpc_path = (PATH)
+
 
 
 def main():
