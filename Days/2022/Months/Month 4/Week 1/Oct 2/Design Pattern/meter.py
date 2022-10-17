@@ -12,6 +12,8 @@ import datetime
 import sys
 import datetime 
 
+
+
 _User = collections.namedtuple("User", "username, sha256")
 Reading = collections.namedtuple("Reading", "when reading reason username")
 
@@ -19,7 +21,7 @@ HOST = "localhost"
 PORT = 11002
 PATH = "/meter"
 
-def handle_arguments():
+def handle_commandline():
     parser = argparse.ArgumentParser(conflict_handler="resolve")
     parser.add_argument("-h", "--host", default=HOST, type=str,
                         help="hosname [default %(default)s")
@@ -47,7 +49,8 @@ class Manager:
     UsernameForSessionId = {}
     ReadingForMeter = {}
 
-    def login(self, username, password):
+    @staticmethod
+    def login(username, password):
         name = name_for_credentials(username, password)
         if name is None:
             raise Error("invalid username or password")
@@ -57,8 +60,9 @@ class Manager:
         return sessionId, name
 
 
-    def get_job(self, sessionId):
-        self._username_for_sessionId(sessionId)
+    @staticmethod
+    def get_job(sessionId):
+        Manager._username_for_sessionId(sessionId)
         while True: # Create fake meter
             kind = random.choice("GE")
             meter = "{}{}".format(kind, random.randint(40000,
@@ -67,13 +71,15 @@ class Manager:
                 Manager.ReadingForMeter[meter] = None
                 return meter
 
-    def _username_for_sessionId(self, sessionId):
+    @staticmethod
+    def _username_for_sessionId(sessionId):
         try:
             return Manager.UsernameForSessionId[sessionId]
         except KeyError:
             raise Error("Invalid session ID")
 
-    def submit_reading(self, sessionId, meter, when, reading, reason=""):
+    @staticmethod
+    def submit_reading(sessionId, meter, when, reading, reason=""):
         if isinstance(when, xmlrpc.client.DateTime):
             when = datetime.datetime.strptime(when.value,
                             "%Y%M%D%T%H:%M%S")
@@ -83,13 +89,14 @@ class Manager:
         if meter not in Manager.ReadingForMeter:
             raise Error("Invalid meter ID")
         
-        username = self._username_for_sessionId(sessionId)
+        username = Manager._username_for_sessionId(sessionId)
         reading = Reading(when, reading, reason, username)
         Manager.ReadingForMeter[meter] = reading
         return True
 
-    def get_status(self, sessionId):
-        username = self._username_for_sessionId(sessionId)
+    @staticmethod
+    def get_status(sessionId):
+        username = Manager._username_for_sessionId(sessionId)
         count = total = 0
         for reading in Manager.ReadingForMeter.values():
             if reading is not None:
@@ -100,7 +107,8 @@ class Manager:
                         count += 1
         return count, total
 
-    def _dump(self, file=sys.stdout):
+    @staticmethod
+    def _dump(file=sys.stdout):
         for meter, reading in Manager.ReadingForMeter.items():
             if reading is not None:
                 print(f"""{meter}={reading.reading}
@@ -125,7 +133,7 @@ class Requesthandler(xmlrpc.server.SimpleXMLRPCRequestHandler):
 
 
 def main():
-    host, port, notify = handle_arguments()
+    host, port, notify = handle_commandline()
     manager, server = setup(host, port)
     print(f"Meter server start at {datetime.datetime.now().isoformat()[:19]} on {host}:{port}{PATH}")
     try:
@@ -138,8 +146,26 @@ def main():
             datetime.datetime.now().isoformat()[:19]))
         manager._dump()
 
+def main():
+    host, port = handle_commandline()
+    username, password = login() # users entering
+    if username is not None:
+        try:
+            manager = xmlrpc.client.ServerProxy("http://{}:{}{}".format(host, port Path))
+            sessionId, name = Manger.login(username, password)
+        except xmlrpc.client.fault as err:
+            print(err)
+        except ConnectionError as err:
+            print(f"Error is the meter server runing? {err}")
 
-"8196775931"
-""" esfahan, serah malek shahr, baharestan sharghi, kooche 11 salmman, bonbast melia, pelak 6, vahed 1 """
+def login():
+    loginName = getpass.getuser()
+    username = input(f"Username [{loginName}]")
+    if not username:
+        username = loginName
+    password = getpass.getpass()
+    if not password:
+        return None, None
+        return username, password
 
 # End
