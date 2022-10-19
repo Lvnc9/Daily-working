@@ -185,5 +185,23 @@ def interact(manager, sessionId):
             break
         accepted = submit(manager, sessionId, meter, reading, reason)
 
+def get_reading(meter):
+
+    reading = input(f"Reading for meter")
+    if reading:
+        try:
+            return True, int(reading), ""
+        except ValueError:
+            print("invalid reading")
+            return False, ""
+    else:
+        return True, -1, input(f"reason for meter {meter}")
+
+def submit(manager, sessionId, meter, reading, reason):
+    try:
+        now = datetime.datetime.now()
+        manager.submit_reading(sessionId, meter, now, reading, reason)
+        count, total = manager.get_status(sessionId)
+        print(f"Accepted you have read {count} out of {total} readings")
 
 # End
