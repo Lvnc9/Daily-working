@@ -1,25 +1,18 @@
 #!/usr/bin/python
 # Start
-# NETWORKING
+# like something different
 # Modules
-import argparse
-import random
-import sys
 import xmlrpc
 import collections
 import hashlib
+import argparse
+import random
 import datetime
 import sys
-import datetime 
 
 
+class Error(Exception): pass
 
-_User = collections.namedtuple("User", "username, sha256")
-Reading = collections.namedtuple("Reading", "when reading reason username")
-HOST = "localhost" 
-
-PORT = 11002
-PATH = "/meter"
 
 def handle_commandline():
     parser = argparse.ArgumentParser(conflict_handler="resolve")
@@ -31,7 +24,13 @@ def handle_commandline():
     args = parser.parse_args()
     return args.host, args.port, args.notify
 
-class Error(Exception): pass
+
+_User = collections.namedtuple("User", "username, sha256")
+Reading = collections.namedtuple("Reading", "when reading reason username")
+HOST = "localhost" 
+
+PORT = 11002
+PATH = "/meter"
 
 
 def name_for_credentials(username, password):
@@ -60,14 +59,13 @@ class Manager:
         Manager.UsernameForSessionId[sessionId] = username
         return sessionId, name
 
-
     @staticmethod
     def get_job(sessionId):
         Manager._username_for_sessionId(sessionId)
-        while True: # Create fake meter
+        while True:  # Create fake meter
             kind = random.choice("GE")
             meter = "{}{}".format(kind, random.randint(40000,
-                    99999 if kind == "G" else  999999))
+                                                       99999 if kind == "G" else 999999))
             if meter not in Manager.ReadingForMeter:
                 Manager.ReadingForMeter[meter] = None
                 return meter
@@ -83,13 +81,13 @@ class Manager:
     def submit_reading(sessionId, meter, when, reading, reason=""):
         if isinstance(when, xmlrpc.client.DateTime):
             when = datetime.datetime.strptime(when.value,
-                            "%Y%M%D%T%H:%M%S")
+                                              "%Y%M%D%T%H:%M%S")
         if (not isinstance(reading, int) or reading < 0) and not reason:
             raise Error("Invalid reading")
-        
+
         if meter not in Manager.ReadingForMeter:
             raise Error("Invalid meter ID")
-        
+
         username = Manager._username_for_sessionId(sessionId)
         reading = Reading(when, reading, reason, username)
         Manager.ReadingForMeter[meter] = reading
@@ -117,35 +115,69 @@ class Manager:
 
                         [{reading.username}]""")
 
-def setup(host, port):
-    manager = Meter.Manager()
-    server = xmlrpc.server.SimpleXMLRPCServer((host, port),
-                requestHandler=RequestHandler, logRequests=False)
-    server.register_introspection_functions()
-    for method in (manager.login, manager.get_job, manager.submit_reading,
-                    manager.get_status):
-        server.register_function(method)
-        return manager, server
-
-
-class Requesthandler(xmlrpc.server.SimpleXMLRPCRequestHandler):
-    rpc_path = (PATH)
-
-
 
 def main():
-    host, port, notify = handle_commandline()
-    manager, server = setup(host, port)
-    print(f"Meter server start at {datetime.datetime.now().isoformat()[:19]} on {host}:{port}{PATH}")
-    try:
-        if notify:
-            with open(notify, "wb") as file:
-                file.write(b'\n')
-            server.serve_forever()
-    except KeyboardInterrupt:
-        print("\rMeter server shutdown at {}".format(
-            datetime.datetime.now().isoformat()[:19]))
-        manager._dump()
+    host, port = handle_commandline()
+    username, password = login()  # users entering
+    if username is not None:
+        try:
+            manager = xmlrpc.client.ServerProxy("http://{}:{}{}".format(host, port Path))
+            sessionId, name = Manager.login(username, password)
+        except xmlrpc.client.fault as err:
+            print(err)
+        except ConnectionError as err:
+            print(f"Error is the meter server runing? {err}")
 
+
+def login():
+    loginName = getpass.getuser()
+    username = input(f"Username [{loginName}]")
+    if not username:
+        username = loginName
+    password = getpass.getpass()
+    if not password:
+        return None, None
+    return username, password
+
+
+def interact(manager, sessionId):
+    accepted = True
+    while True:
+        if accepted:
+            meter = manager.get_job(sessionId)
+            if not meter:
+                print("all jobs done")
+                break
+        accepted, reading, reason = get_reading(meter)
+        if not accepted:
+            continue
+        if (not reading or reading == -1) and not reason:
+            break
+        accepted = submit(manager, sessionId, meter, reading, reason)
+
+
+def get_reading(meter):
+
+    reading = input(f"Reading for meter")
+    if reading:
+        try:
+            return True, int(reading), ""
+        except ValueError:
+            print("invalid reading")
+            return False, ""
+    else:
+        return True, -1, input(f"reason for meter {meter}")
+
+
+def submit(manager, sessionId, meter, reading, reason):
+    try:
+        now = datetime.datetime.now()
+        manager.submit_reading(sessionId, meter, now, reading, reason)
+        count, total = manager.get_status(sessionId)
+        print(f"Accepted you have read {count} out of {total} readings")
+        return True
+    except (xmlrpc.client.fault, ConnectionError) as err:
+        print(err)
+        return False
 
 # End
