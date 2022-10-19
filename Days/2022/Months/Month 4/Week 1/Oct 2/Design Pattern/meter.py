@@ -16,8 +16,8 @@ import datetime
 
 _User = collections.namedtuple("User", "username, sha256")
 Reading = collections.namedtuple("Reading", "when reading reason username")
+HOST = "localhost" 
 
-HOST = "localhost"
 PORT = 11002
 PATH = "/meter"
 
@@ -38,6 +38,7 @@ def name_for_credentials(username, password):
     sha = hashlib.sha256()
     sha.update(password.encode("utf-8"))
     user = _User(username, sha.hexdigest())
+    # list of users that we can use for check
     return _Users.get(user)
 
 
@@ -146,13 +147,14 @@ def main():
             datetime.datetime.now().isoformat()[:19]))
         manager._dump()
 
+# another way of using main()
 def main():
     host, port = handle_commandline()
     username, password = login() # users entering
     if username is not None:
         try:
             manager = xmlrpc.client.ServerProxy("http://{}:{}{}".format(host, port Path))
-            sessionId, name = Manger.login(username, password)
+            sessionId, name = Manager.login(username, password)
         except xmlrpc.client.fault as err:
             print(err)
         except ConnectionError as err:
@@ -166,6 +168,22 @@ def login():
     password = getpass.getpass()
     if not password:
         return None, None
-        return username, password
+    return username, password
+
+def interact(manager, sessionId):
+    accepted = True
+    while True:
+        if accepted:
+            meter = manager.get_job(sessionId)
+            if not meter:
+                print("all jobs done")
+                break
+        accepted, reading, reason = get_reading(meter)
+        if not accepted:
+            continue
+        if (not reading or reading == -1) and not reason:
+            break
+        accepted = submit(manager, sessionId, meter, reading, reason)
+
 
 # End
