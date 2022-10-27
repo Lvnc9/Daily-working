@@ -38,9 +38,13 @@ class Manager:
             if Manager.ReadingForMeter.insert_if_missing(meter):
                 return meter
 
-
-    
-
-
-
+    def submit_reading(self, sessionId, meter, reading, reason=""):
+        if (not isinstance(reading, int) or reading < 0) and not reason:
+            raise Error("Invalid reading")
+        if meter not in Manager.ReadingForMeter:
+            raise Error("Invalid Meter ID")
+        username = Manager._username_for_sessionId(sessionId)
+        reading = Reading(when, reading, reason, username)
+        Manager.ReadingForMeter[meter] = reading
+        
 # End
