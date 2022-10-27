@@ -8,6 +8,18 @@ import random
 
 
 class Error(Exception): pass
+
+class ThreadSafeDict:
+
+    def __init__(self, *args, **kwargs):
+        self._dict = dict(*args, **kwargs)
+        self._lock = threading.Lock()
+
+    def copy(self):
+        with self._lock:
+            return self.__class__(**self._dict)
+
+
 class Manager:
 
     SessionId = 0
@@ -46,5 +58,6 @@ class Manager:
         username = Manager._username_for_sessionId(sessionId)
         reading = Reading(when, reading, reason, username)
         Manager.ReadingForMeter[meter] = reading
-        
+
+
 # End
