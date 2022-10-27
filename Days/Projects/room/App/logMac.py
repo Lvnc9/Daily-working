@@ -11,8 +11,8 @@ class LogWriter:
     instances will take the last instances place 
      """
     class __LogWriter:
-        def __init__(self):
-            self.file_name = None
+        def __init__(self, file_name=""):
+            self.file_name = file_name
 
         def __str__(self):
             return "{0!r} {1}".format(self, self.file_name)
@@ -48,7 +48,7 @@ class LogWriter:
         return getattr(self.instance, name)
 
     def __setattr__(self, name):
-        return setattr(self.instance, name)
+        return setattr(self, ".instance", name)
 
 
 # End
