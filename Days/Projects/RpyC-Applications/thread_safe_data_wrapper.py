@@ -44,6 +44,17 @@ class ThreadSafeDict:
             return len(self._dict)
 
 
+class _MeterDict(ThreadSafeDict):
+
+    def insert_if_missing(self, key, value=None):
+        with self._lock:
+            if key not in self._dict:
+                self._dict[key] = value
+                return True
+            return False
+
+
+
 
 class Manager:
 
@@ -84,5 +95,6 @@ class Manager:
         reading = Reading(when, reading, reason, username)
         Manager.ReadingForMeter[meter] = reading
 
+if meter not ReadingForMeter
 
 # End
