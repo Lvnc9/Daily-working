@@ -19,6 +19,31 @@ class ThreadSafeDict:
         with self._lock:
             return self.__class__(**self._dict)
 
+    def get(self, key, default=None):
+        with self._lock:
+            return self._dict.get(key, default)
+    
+    def __getitem__(self, key):
+        with self._lock:
+            return self._dict[key]
+    
+    def __setitem__(self, key, value):
+        with self._lock:
+            return self._dict[key] = value
+    
+    def __delitem__(self, key):
+        with self._lock:
+            del self._dict[key]
+    
+    def __contains__(self, key):
+        with self._lock:
+            return key in self._dict
+        
+    def __len__(self):
+        with self._lock:
+            return len(self._dict)
+
+
 
 class Manager:
 

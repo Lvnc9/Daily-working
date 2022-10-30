@@ -15,6 +15,7 @@ alal = {
 }
 
 
-pashmak = pprint.pprint({**lala, **alal})
+pashmak = {**lala, **alal}
+pprint.pprint(pashmak)
 
 # End
