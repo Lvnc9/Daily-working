@@ -29,7 +29,7 @@ class ThreadSafeDict:
     
     def __setitem__(self, key, value):
         with self._lock:
-            return self._dict[key] = value
+            self._dict[key] = value
     
     def __delitem__(self, key):
         with self._lock:
@@ -53,7 +53,15 @@ class _MeterDict(ThreadSafeDict):
                 return True
             return False
 
-
+    def status(self, username):
+        count = total = 0 
+        with self._lock:
+            for reading in self._dict.values():
+                if reading is not None:
+                    total += 1
+                    if reading.username == username:
+                        count += 1
+        return count, total
 
 
 class Manager:
