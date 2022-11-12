@@ -4,10 +4,10 @@
 # Modules
 import datetime
 import threading
-import thread_safe_data_wrapper as rpyc
+import thread_safe_data_wrapper as MeterMt
 import rpyc
 import sys
-import MeterMt
+
 
 
 PORT = 11003
@@ -24,9 +24,12 @@ class MeterService(rpyc.Service):
         pass
 
     exposed_login = Manager.login
-    exposed_get_status = Manager.get_status()
-    exposed_get_job = Manager.get_job()
-    
+    exposed_get_status = Manager.get_status
+    exposed_get_job = Manager.get_job
+
+    def exposed_submit_reading(self, sessionId, meter, when, reading, reason=""):
+        when = datetime.datetime.strptime(str(when)[:19], "%Y-%m-%d %H:%M:%S")
+        Manager.submit_reading(sessionId, meter, when, reading, reason)
 
 if __name__ == "__main__":
     import rpyc.utils.server
