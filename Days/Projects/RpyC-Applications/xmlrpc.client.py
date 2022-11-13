@@ -31,7 +31,17 @@ class GUIkind:
             self.handle_error("Failed to start the RPYC METER server")
             return False
         self.manager = self.service.root
-        retunr self.login_to_server(username, password)
+        return self.login_to_server(username, password)
+
+    def login_to_server(self, username, password):
+    try:
+        self.sessionId, name = self.manager.login(username, password)
+        self.master.title("Meter \u2014 {}".format(name))
+        return True
+    except rpyc.core.vinegar.GenericException as err:
+        self.handle_error(err)
+        return False
+
 
 # FOR RUNNING
 def main():
