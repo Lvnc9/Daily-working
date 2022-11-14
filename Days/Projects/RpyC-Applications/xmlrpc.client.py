@@ -8,10 +8,10 @@ import tempfile
 import random
 import subprocess
 import sys
-
+import os
 
 manager = MeterMt.Manager
-
+PORT = 11003
 # GUI rpyc client
 
 class GUIkind:
@@ -26,7 +26,7 @@ class GUIkind:
                                 filename]).pid
             self.wait_for_server(filename)
         try:
-            self.serice = rpyc.sonnect(HOST, PORT)
+            self.serice = rpyc.connect(HOST, PORT)
         except ConnectionError:
             self.handle_error("Failed to start the RPYC METER server")
             return False
