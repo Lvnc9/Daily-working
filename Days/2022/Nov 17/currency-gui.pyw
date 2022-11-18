@@ -4,7 +4,7 @@
 # Modules
 import tkinter as tk
 import tkinter.ttk as ttk 
-import tkutil
+import TkUtil
 import os
 
 
@@ -12,7 +12,7 @@ import os
 def main():
     application = tk.Tk()
     application.title("Currency")
-    tkutil.set_application_icons(application, os.path.join(
+    TkUtil.set_application_icons(application, os.path.join(
             os.path.dirname(os.path.realpath(__file__)), "images"))
     Main.window(application)
     application.mainloop()

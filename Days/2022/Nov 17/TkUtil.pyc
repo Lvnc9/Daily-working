@@ -1,0 +1,22 @@
+#!/usri/bin/python3
+# Start
+# the main functionlaity of currency-gui
+# Modules
+import os
+import tkinter as tk
+import tkinter.ttk as ttk 
+
+
+# Setting applications icons
+def set_application_icons(application, path):
+    icon32 = tk.PhotoImage(file=os.path.join(path, "icon_32x32.gif"))
+    icon16 = tk.PhotoImage(file=os.path.join(path, "icon_16x16.gif"))
+    application.tk.call("wm", "iconphoto", application, "--default", icon32,
+        icon16)
+
+
+
+
+
+
+# End
