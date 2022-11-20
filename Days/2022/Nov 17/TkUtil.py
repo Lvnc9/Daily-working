@@ -14,6 +14,18 @@ def set_application_icons(application, path):
     application.tk.call("wm", "iconphoto", application, "--default", icon32,
         icon16)
 
+def validate_spinbox_float(spinbox, number=None):
+    if number is None:
+        spinbox.cget()
+    if number == "":
+        return True
+    try:
+        x = float(number)
+        if float(spinbox.cget("from")) <= x <= float(spinbox.cget("to")):
+            return True
+    except ValueError:
+        pass
+    return False
 
 
 

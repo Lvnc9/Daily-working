@@ -4,7 +4,7 @@
 # Modules
 import tkinter as tk
 import tkinter.ttk as ttk
-
+import TkUtil
 
 # spinbox 
 spinbox = ttk.Spinbox if hasattr(ttk, 'Spinbox') else tk.Spinbox
@@ -26,6 +26,21 @@ class Window(ttk.Frame):
         self.currencyTo = tk.StringVar()
         self.amount = tk.StringVar()
         self.rates = {}
+
+    def create_widgets(self):
+        self.currencyFrombox = ttk.Combobox(self,
+                textvariable=self.currencyFrom)
+        self.currencyTobox = ttk.Combobox(self,
+                textvariable=self.currencyTo)
+        self.amountSpinbox = spinbox(self, textvariable=self.amount,
+                from_=1.0, to=10e6, validate="all", format="%0.2f",
+                width=8)
+        self.amountSpinbox.config(validatecommand=(
+                self.amountSpinbox.register(self.validate), "%P"))
+        
+    def validate(self, number):
+        return TkUtil.validate_spinbox_float(self.amountSpinbox, number)
+    
     
 
 
