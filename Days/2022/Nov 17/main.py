@@ -6,7 +6,10 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 
+# spinbox 
+spinbox = ttk.Spinbox if hasattr(ttk, 'Spinbox') else tk.Spinbox
 
+# main code for running program
 class Window(ttk.Frame):
 
     def __init__(self, master=None):
@@ -18,6 +21,12 @@ class Window(ttk.Frame):
         self.currencyFormCombobox.focus()
         self.after(10, self.get_rates)
 
+    def create_variables(self):
+        self.currencyFrom = tk.StringVar()
+        self.currencyTo = tk.StringVar()
+        self.amount = tk.StringVar()
+        self.rates = {}
+    
 
 
 # End
