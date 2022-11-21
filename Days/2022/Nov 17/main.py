@@ -5,6 +5,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import TkUtil
+import urllib3
 
 # spinbox 
 spinbox = ttk.Spinbox if hasattr(ttk, 'Spinbox') else tk.Spinbox
@@ -62,6 +63,32 @@ class Window(ttk.Frame):
         self.amountSpinbox.bind("<Return>", self.calculate)
         self.master.bind("<Escape>", lambda event: self.quit())
 
-    
+
+    def calculate(self, event=None):
+        fromCurrency = self.currencyFrom.get()
+        tocurrency = self.currencyTo.get()
+        amount = self.amount.get()
+        if fromCurrency and tocurrency and amount:
+            amount = ((self.rates[fromCurrency] / self.rates[tocurrency]) *
+                float(amount))
+            self.resultLabel.config(text="{:,.2f}".format(amount))
+
+    def get_rates(self):
+        try:
+            self.rates = Rates.get()
+            self.populate_comboboxes()
+        except urllib3.error.URLError as err:
+            messagebox.showerror("Currency \u2014 Error", str(err),
+                parent=self)
+
+    def populate_comboboxes(self):
+        currencies = sorted(self.rates.keys())
+        for combobox in (self.currencyFromCombobox,
+                self.currencyToCombobox):
+            combobox.state(("readonly",))
+            combobox.config(values=currencies)
+        TkUtil.set_combobox_item(self.currencyFromCombobox, "USD", True)
+        TkUtil.set_combobox_item(self.currencyToCombobox, "GBP", True)
+        self.calculate()
 
 # End

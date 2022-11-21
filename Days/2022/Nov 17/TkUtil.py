@@ -27,6 +27,12 @@ def validate_spinbox_float(spinbox, number=None):
         pass
     return False
 
+def set_combobox_item(combobox, text, fuzzy=False):
+    for index, value in enumerate(combobox.cget("values")):
+        if (fuzzy and text in value) or (value == text):
+            combobox.current(index)
+            return
+        combobox.current(0 if len(combobox.cget("values")) else -1)
 
 
 
