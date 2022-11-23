@@ -220,7 +220,7 @@ class _IntDialog(_NumberDialogBase):
 
 
     def validate(self, number=None):
-        return TkUtil.validate_spinbox_int(self.spinbox, number)
+        return validate_spinbox_int(self.spinbox, number)
 
 
     def apply(self):
@@ -276,6 +276,18 @@ def get_float(master, title, prompt, initial=0.0, minimum=None,
     _FloatDialog(master, title, prompt, result, minimum, maximum, format)
     return result.value if result.ok else None
 
+def validate_spinbox_int(spinbox, number=None):
+    if number is None:
+        number = spinbox.get()
+    if number == "":
+        return True
+    try:
+        x = int(number)
+        if int(spinbox.cget("from")) <= x <= int(spinbox.cget("to")):
+            return True
+    except ValueError:
+        pass
+    return False
 
 if __name__ == "__main__":
     if sys.stdout.isatty():
