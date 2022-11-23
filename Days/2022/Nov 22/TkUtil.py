@@ -289,6 +289,13 @@ def validate_spinbox_int(spinbox, number=None):
         pass
     return False
 
+class Label(ttk.Label):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if mac():
+            self.config(underline=-1)
+            
 if __name__ == "__main__":
     if sys.stdout.isatty():
         application = tk.Tk()
