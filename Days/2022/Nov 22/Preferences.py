@@ -79,9 +79,16 @@ class Window(TkUtil.Dialog):
             self.maxColors = maxColors
             self.board.newGame()
     
-    application = tk.Tk()
-
-    def close(self, event):
-        self.application.quit()
+    def close(cls, event):
+        cls.application.quit()
     
+    application = tk.Tk()
+    scoreText = tk.StringVar()
+    board = Board.Board(application, print, scoreText)
+    window = window(application, board)
+    application.bind("<Escape>", Window.close())
+    board.bind("<Escape>", close)
+    application.mainloop()
+    print(board.columns, board.rows, board.maxColors)
+
 # End
