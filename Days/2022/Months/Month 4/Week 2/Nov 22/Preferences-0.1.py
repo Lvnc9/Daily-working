@@ -79,6 +79,7 @@ class Window(TkUtil.Dialog):
             self.maxColors = maxColors
             self.board.newGame()
     
+    @classmethod
     def close(cls, event):
         cls.application.quit()
     

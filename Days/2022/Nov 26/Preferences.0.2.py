@@ -7,6 +7,7 @@ import tkinter.ttk as ttk
 
 
 class Window(tk.Toplevel):
+    
     def __init__(self, master):
         super().__init__(master)
         self.withdraw()
@@ -17,11 +18,28 @@ class Window(tk.Toplevel):
         self.deiconify()
         if self.winfo_viewable():
             self.transient(master)
-            self.wait_visibility()
+        self.wait_visibility()
     
-
-
-
-
+    def create_ui(self):
+        self.helpLabel = ttk.Label(self, text=_TEXT, background="white")
+        self.closeButton = TkUtil.Button(self, text="Close", undeline=0)
+        self.helpLabel.pack(anchor=tk.N, expend=True, fill=tk.BOTH,
+                padx=PAD, pady=PAD)
+        self.closeButton.pack(anchor=tk.S)
+        self.protocol("WM_DELETE_WINDOW", self.close)
+        if not TkUtil.mac():
+            self.bind("<Escpae>", self.close)
+            self.bind("<Escape>", self.reposition)
+    
+    def reposition(self, event=None):
+        if self.master is not None:
+            self.geometry("+{}{}".format(
+                    self.master.winfo_rootx() + 50,
+                    self.master.winfo_rooty() + 50))
+                
+    def close(cls, event):
+        cls.application.quit()
+    
+    application = tk.Tk()
 
 # End
