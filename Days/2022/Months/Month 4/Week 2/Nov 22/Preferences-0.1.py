@@ -7,6 +7,8 @@ import tkinter.ttk as ttk
 import TkUtil
 
 PAD = "0.75m"
+APPNAME = "TEST"
+
 
 class Window(TkUtil.Dialog):
 

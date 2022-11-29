@@ -4,6 +4,12 @@
 # Modules
 import tkinter as tk
 import tkinter.ttk as ttk
+import TkUtil
+
+
+PAD = "0.75m"
+APPNAME = "TEST"
+_TEXT = "BLOB LOB LA"
 
 
 class Window(tk.Toplevel):
@@ -37,8 +43,8 @@ class Window(tk.Toplevel):
                     self.master.winfo_rootx() + 50,
                     self.master.winfo_rooty() + 50))
                 
-    def close(cls, event):
-        cls.application.quit()
+    def close(self, event):
+        self.withdraw()  
     
     application = tk.Tk()
 
