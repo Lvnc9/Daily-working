@@ -24,6 +24,9 @@ def main():
             os.path.dirname(os.path.realpath(__file__)), "images"
             ))
     window = Main.Window(application)
-    application.protocol("WM_DELETE_WINDOW", window.close())
+    application.protocol("WM_DELETE_WINDOW", window.close)
+    application.deiconify()
+    application.mainloop()
+    
 
 # End

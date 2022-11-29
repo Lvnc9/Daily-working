@@ -5,6 +5,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import TkUtil
+import os
 
 
 PAD = "0.75m"
@@ -12,40 +13,33 @@ APPNAME = "TEST"
 _TEXT = "BLOB LOB LA"
 
 
-class Window(tk.Toplevel):
+class Window(tk.Frame):
     
     def __init__(self, master):
-        super().__init__(master)
-        self.withdraw()
-        self.title("Help \u2014 {}".format(APPNAME))
+        super().__init__(master, padding=PAD)
+        self.create_variables()
+        self.create_images()
         self.create_ui()
-        self.reposition()
-        self.resizable(False, False)
-        self.deiconify()
-        if self.winfo_viewable():
-            self.transient(master)
-        self.wait_visibility()
-    
+
+    def create_variables(self):
+        self.images = {}
+        self.statusText = tk.StringVar()
+        self.scoreText = tk.StringVar()
+        self.helpDialog = None
+
     def create_ui(self):
-        self.helpLabel = ttk.Label(self, text=_TEXT, background="white")
-        self.closeButton = TkUtil.Button(self, text="Close", undeline=0)
-        self.helpLabel.pack(anchor=tk.N, expend=True, fill=tk.BOTH,
-                padx=PAD, pady=PAD)
-        self.closeButton.pack(anchor=tk.S)
-        self.protocol("WM_DELETE_WINDOW", self.close)
-        if not TkUtil.mac():
-            self.bind("<Escpae>", self.close)
-            self.bind("<Escape>", self.reposition)
-    
-    def reposition(self, event=None):
-        if self.master is not None:
-            self.geometry("+{}{}".format(
-                    self.master.winfo_rootx() + 50,
-                    self.master.winfo_rooty() + 50))
-                
-    def close(self, event):
-        self.withdraw()  
-    
-    application = tk.Tk()
+    self.create_board()
+    self.create_menubar()
+    self.create_statusbar()
+    self.create_bindings()
+    self.master.resizable(False, False)
+
+    def create_images(self):
+        imagePath = os.path.join(os.path.dirname(
+            os.path.realpath(__file__)), "images")
+        for name in (NEW, CLOSE, PREFERENCES, HELP, ABOUT):
+            self.images[name] = tk.PhotoImage(
+                file=os.path.join(imagePath, name + "_16x16.gif")
+            )
 
 # End
