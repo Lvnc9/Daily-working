@@ -251,6 +251,9 @@ class _FloatDialog(_NumberDialogBase):
         self.result.value = float(self.value.get())
         self.result.ok = True
 
+# Control is necessary for key bindings
+def key_modifier():
+    return "Command" if mac() else "Control"
 
 def get_str(master, title, prompt, initial=""):
     """Returns None if the user cancelled or a string"""

@@ -42,4 +42,19 @@ class Window(tk.Frame):
                 file=os.path.join(imagePath, name + "_16x16.gif")
             )
 
+    def create_board(self):
+        self.board = Board.board(self.master,
+                 self.set_status_text, self.scoreText)
+        self.board.update_score()
+        self.board.pack(fill=tk.Both, expand=True)
+
+    def create_bindings(self):
+        modifier = TkUtil.key_modifier()
+        self.master.bind("<{}-n>".format(modifer), self.board.new_game)
+        self.master.bind("<{}-q>".format(modifier), self.close)
+        self.master.bind("<F1>", self.help)
+    
+    def create_menuebar(self):
+        modifier = TkUtil.key_modifer
+
 # End
