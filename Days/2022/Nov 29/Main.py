@@ -28,11 +28,11 @@ class Window(tk.Frame):
         self.helpDialog = None
 
     def create_ui(self):
-    self.create_board()
-    self.create_menubar()
-    self.create_statusbar()
-    self.create_bindings()
-    self.master.resizable(False, False)
+        self.create_board()
+        self.create_menubar()
+        self.create_statusbar()
+        self.create_bindings()
+        self.master.resizable(False, False)
 
     def create_images(self):
         imagePath = os.path.join(os.path.dirname(
@@ -50,11 +50,37 @@ class Window(tk.Frame):
 
     def create_bindings(self):
         modifier = TkUtil.key_modifier()
-        self.master.bind("<{}-n>".format(modifer), self.board.new_game)
+        self.master.bind("<{}-n>".format(modifier), self.board.new_game)
         self.master.bind("<{}-q>".format(modifier), self.close)
         self.master.bind("<F1>", self.help)
     
-    def create_menuebar(self):
-        modifier = TkUtil.key_modifer
+    def create_menubar(self):
+        self.menubar = tk.Menu(self.master)
+        self.master.config(menu=self.menubar)
+        self.create_file_menu()
+        self.create_help_file()
+    
+    def create_file_menu(self):
+        modifier = TkUtil.menu_modifier()
+        fileMenu = tk.Menu(self.menubar, name="apple")
+        fileMenu.add_command(label=NEW, uderline=0,
+                command=self.board.new_game, compound=tk.LEFT,
+                image=self.images[NEW], accelerator=modifier + "+N")
+        if TkUtil.mac():
+            self.master.createcommand("exit", self.close)
+            self.master.createcommand("::tk::mac:showPreferences",
+                    self.preferences)
+        else:
+            fileMenu.add_separator()
+            fileMenue.add_command(label=PEREFERENCES + ELLIPSIS, undeline=0,
+                    command=self.pereferences,
+                    images=self.images)
+            fileMenu.add_separator()
+            fileMenu.add_command(label="Quit", underline=0,
+                    command=self.close, compound=tk.LEFT,
+                    image=self.images[CLOSE],
+                    accelerator=modifier + "+Q")
+            self.menubar.add_cascade(label="File", underline=0,
+                    menu=fileMenu)1
 
 # End

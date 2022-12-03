@@ -19,6 +19,11 @@ CANCEL_BUTTON = 0b0010
 YES_BUTTON =    0b0100
 NO_BUTTON =     0b1000
 
+PAD = "0.75m"SELECTED = "selected"
+NOT_SELECTED = "!" + SELECTED
+DISABLED = "disabled"
+NOT_DISABLED = "!" + DISABLED
+TOGGLE_BUTTON_STYLE = "Toggle.TButton"
 PAD = "0.75m"
 
 class Dialog(tk.Toplevel): # See MeterLogin.py for a simple example subclass
@@ -251,9 +256,21 @@ class _FloatDialog(_NumberDialogBase):
         self.result.value = float(self.value.get())
         self.result.ok = True
 
+def mac():
+    return tk._default_root.tk.call("tk", "windowingsystem") == "aqua"
+
+def windows():
+    return tk._default_root.tk.call("tk", "windowingsystem") == "win32"
+
+def x11():
+    return tk._default_root.tk.call("tk", "windowingsystem") == "x11"
+
 # Control is necessary for key bindings
 def key_modifier():
     return "Command" if mac() else "Control"
+
+def menu_modifier():
+    return "Command" if mac() else "Ctrl"
 
 def get_str(master, title, prompt, initial=""):
     """Returns None if the user cancelled or a string"""
