@@ -72,7 +72,7 @@ class Window(tk.Frame):
                     self.preferences)
         else:
             fileMenu.add_separator()
-            fileMenue.add_command(label=PEREFERENCES + ELLIPSIS, undeline=0,
+            fileMenu.add_command(label=PEREFERENCES + ELLIPSIS, undeline=0,
                     command=self.pereferences,
                     images=self.images)
             fileMenu.add_separator()
@@ -81,6 +81,6 @@ class Window(tk.Frame):
                     image=self.images[CLOSE],
                     accelerator=modifier + "+Q")
             self.menubar.add_cascade(label="File", underline=0,
-                    menu=fileMenu)1
+                    menu=fileMenu)
 
 # End
