@@ -9,6 +9,14 @@ import tkinter.ttk as ttk
 class Lala(tk.Frame):
     """ Something """
 
+    boarder_effects = {
+        "flat" : tk.FLAT,
+        "sunken" : tk.SUNKEN,
+        "raised" : tk.RAISED,
+        "groove" : tk.GROOVE,
+        "ridge" : tk.RIDGE,
+    }
+
     def __init__(self, master=None):
         super().__init__(master)
         helloLabel = ttk.Label(self, text="Hello Sam",      # Showing messages
