@@ -50,9 +50,11 @@ ent.insert(tk.END, "What is you're name? ")
 btn = tk.Button(master=frame, text="Quit", relief=tk.SUNKEN, command=frame.quit)
 ent.pack()
 btn.pack()
+frame.place
 frame.pack()
 
 window.mainloop()
+
 
 
 
