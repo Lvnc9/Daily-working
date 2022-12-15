@@ -34,7 +34,7 @@ class StickyColoredAandB(tk.Tk):
         lbl_value.grid(row=0 column=1)
     
     text = lbl_text["text"]
-    lbl_value = tk.Label(master=window, text="0")
+    lbl_value = tk.Label(master=StickyColoredAandB(), text="0")
     lbl_value.grid(row=0, column=1)
     # Increase decrease funcitons
     @classmethod
